@@ -19,7 +19,7 @@ RUN mkdir /etc/ansible \
     && pip install -U pyOpenSSL pyYAML \
     && pip install -U six --ignore-installed \
     && pip install pywinrm pywinrm[kerberos] pywinrm[credssp] \
-    && pip install ansible-core ansible==4.0.0 ansible-lint \
+    && pip install ansible-core ansible==4.1.0 ansible-lint \
     && pip install -U ansible-merge-vars ansible2puml ansible-netbox-inventory \
     && pip install -U argcomplete docker molecule
 
@@ -29,7 +29,7 @@ ENV ANSIBLE_RETRY_FILES_ENABLED false
 ENV ANSIBLE_SSH_PIPELINING true
 
 VOLUME [ "/etc/ansible" ]
-VOLUME [ "~/.ssh" ]
+VOLUME [ "/root/.ssh" ]
 
 WORKDIR /etc/ansible
 
