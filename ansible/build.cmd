@@ -1,7 +1,18 @@
 @echo off
 setlocal
-set VERSION=4.1.0
+set ANSIBLE_VERSION=5.1.0
 
-docker build --pull --no-cache --progress plain -t dcjulian29/ansible:%VERSION% .
-docker tag dcjulian29/ansible:%VERSION% dcjulian29/ansible:latest
+pushd %~dp0
+
+docker build --build-arg ANSIBLE_VERSION=%ANSIBLE_VERSION% --progress plain ^
+  -t dcjulian29/ansible:%ANSIBLE_VERSION% .
+
+popd
+
+docker tag dcjulian29/ansible:%ANSIBLE_VERSION% dcjulian29/ansible:latest
+
+if "%1" == "" GOTO :EOF
+
+echo --------------------------------------------------------------------------
+
 docker push dcjulian29/ansible --all-tags
