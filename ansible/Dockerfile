@@ -7,7 +7,8 @@ ENV VIRTUAL_ENV=/opt/ansible
 
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-RUN mkdir /etc/ansible /root/.ssh \
+RUN mkdir /etc/ansible /root/.ssh /root/.ansible \
+  && apt-get update && apt-get install -y vim \
   && python -m venv $VIRTUAL_ENV --system-site-packages \
   && pip install cffi PyYAML packaging jinja2 cryptography
   
