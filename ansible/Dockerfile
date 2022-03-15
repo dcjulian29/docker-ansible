@@ -11,14 +11,14 @@ RUN mkdir /etc/ansible /root/.ssh /root/.ansible \
   && apt-get update && apt-get install -y vim \
   && python -m venv $VIRTUAL_ENV --system-site-packages \
   && pip install cffi PyYAML packaging jinja2 cryptography
-  
-  #pyparsing, MarkupSafe, resolvelib, 
+
+  #pyparsing, MarkupSafe, resolvelib,
 
 RUN pip install ansible==${ANSIBLE_VERSION}
 
 RUN pip install ansible-lint[yamllint] paramiko docker molecule toml
 
-RUN pip install pywinrm pywinrm[credssp]
+RUN pip install pywinrm pywinrm[credssp] passlib[bcrypt]
 
 VOLUME [ "/etc/ansible" ]
 VOLUME [ "/root/.ssh" ]
