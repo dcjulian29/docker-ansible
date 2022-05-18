@@ -1,6 +1,6 @@
 @echo off
 setlocal
-set ANSIBLE_VERSION=5.7.0
+set ANSIBLE_VERSION=5.8.0
 
 pushd %~dp0
 
