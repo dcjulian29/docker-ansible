@@ -1,4 +1,4 @@
-@docker run -it --rm -v "C:\code\ansible:/etc/ansible:ro" dcjulian29/ansible %*
+@docker run -it --rm -v "C:\code\ansible:/opt/ansible/etc:ro" dcjulian29/ansible %*
 
 exit 0
 

@@ -1,11 +1,13 @@
 @echo off
 setlocal
-set ANSIBLE_VERSION=5.8.0
+set ANSIBLE_VERSION=5.9.0
 
 pushd %~dp0
 
 docker build --build-arg ANSIBLE_VERSION=%ANSIBLE_VERSION% --progress plain ^
   -t dcjulian29/ansible:%ANSIBLE_VERSION% .
+
+if %errorlevel% neq 0 popd;exit /b %errorlevel%
 
 popd
 
