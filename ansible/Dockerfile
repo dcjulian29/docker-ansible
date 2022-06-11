@@ -1,4 +1,4 @@
-FROM python:3.10-slim-bullseye
+FROM python:slim-bullseye
 
 ARG ANSIBLE_VERSION
 
