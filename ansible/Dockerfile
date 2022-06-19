@@ -40,6 +40,6 @@ VOLUME [ "/root/.ssh" ]
 VOLUME [ "/root/.azure" ]
 VOLUME [ "/root/.aws" ]
 
-#WORKDIR /root/ansible
+WORKDIR /etc/ansible
 
 ENTRYPOINT [ "/bin/bash" ]
