@@ -25,7 +25,7 @@ jobs:
         run: docker build . --build-arg ANSIBLE_VERSION=${{ steps.vars.outputs.version }} --tag ${{ steps.vars.outputs.version }}
 
       - name: Tag the image as latest.
-        run: docker tag dcjulian29/ansible:{{ steps.vars.outputs.version }} dcjulian29/ansible:latest
+        run: docker tag dcjulian29/ansible:${{ steps.vars.outputs.version }} dcjulian29/ansible:latest
 
       - name: Publish Docker image to DockerHub.
         run: docker push dcjulian29/ansible --all-tags
