@@ -15,7 +15,7 @@ jobs:
 
       - name: Grab the Ansible Version to use.
         id: vars
-        run: echo "::set-output name=version::$(cat version)"
+        run: echo "::set-output name=version::$(cat VERSION)"
 
       - name: Build the Docker Image.
         run: docker build . --build-arg ANSIBLE_VERSION=${{ steps.vars.outputs.version }} --tag ${{ steps.vars.outputs.version }}-ci:$(date +%s)
