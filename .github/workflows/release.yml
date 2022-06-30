@@ -22,7 +22,7 @@ jobs:
         run: echo "::set-output name=version::$(cat VERSION)"
 
       - name: Build the Docker Image.
-        run: docker build . --build-arg ANSIBLE_VERSION=${{ steps.vars.outputs.version }} --tag ${{ steps.getversion.outputs.version }}
+        run: docker build . --build-arg ANSIBLE_VERSION=${{ steps.vars.outputs.version }} --tag ${{ steps.vars.outputs.version }}
 
       - name: Tag the image as latest.
         run: docker tag dcjulian29/ansible:{{ steps.vars.outputs.version }} dcjulian29/ansible:latest
