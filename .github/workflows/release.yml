@@ -18,7 +18,7 @@ jobs:
 
       - name: Grab the Ansible version to use.
         id: vars
-        run: echo "::set-output name=version::$(echo ${GITHUB_REF:10})
+        run: echo "::set-output name=version::$(echo ${GITHUB_REF:10})"
 
       - name: Build the Docker Image.
         run: docker build . --build-arg ANSIBLE_VERSION=${{ steps.vars.outputs.version }} --tag ${{ steps.getversion.outputs.version }}
