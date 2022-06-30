@@ -1,0 +1,29 @@
+name: Release Image
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Login to DockerHub.
+        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u dcjulian29 --password-stdin
+
+      - name: Grab the Ansible version to use.
+        id: vars
+        run: echo "::set-output name=version::$(echo ${GITHUB_REF:10})
+
+      - name: Build the Docker Image.
+        run: docker build . --build-arg ANSIBLE_VERSION=${{ steps.vars.outputs.version }} --tag ${{ steps.getversion.outputs.version }}
+
+      - name: Tag the image as latest.
+        run: docker tag dcjulian29/ansible:{{ steps.vars.outputs.version }} dcjulian29/ansible:latest
+
+      - name: Publish Docker image to DockerHub.
+        run: docker push dcjulian29/ansible --all-tags
