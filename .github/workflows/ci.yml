@@ -6,11 +6,13 @@ on:
       - main
     paths:
       - Dockerfile
+      - VERSION
   pull_request:
     branches:
       - main
     paths:
       - Dockerfile
+      - VERSION
 
   workflow_dispatch:
 
