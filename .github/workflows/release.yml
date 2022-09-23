@@ -2,10 +2,10 @@ name: Release Image
 
 on:
   push:
+    branches:
+      - main
     tags:
       - '*'
-
-  #workflow_dispatch:
 
 jobs:
   release:
@@ -23,7 +23,6 @@ jobs:
       - name: Grab the Ansible version to use.
         id: vars
         run: echo "::set-output name=version::$(echo ${GITHUB_REF:10})"
-        #run: echo "::set-output name=version::$(cat VERSION)"
 
       - name: Build and push Docker image.
         uses: docker/build-push-action@v3
@@ -31,4 +30,6 @@ jobs:
           build-args: |
             ANSIBLE_VERSION=${{ steps.vars.outputs.version }}
           push: true
-          tags: dcjulian29/ansible:${{ steps.vars.outputs.version }},dcjulian29/ansible:latest
+          tags: |
+            dcjulian29/ansible:${{ steps.vars.outputs.version }}
+            dcjulian29/ansible:latest

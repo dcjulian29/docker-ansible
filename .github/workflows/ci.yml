@@ -2,13 +2,17 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
     paths:
-      - 'Dockerfile'
+      - Dockerfile
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
     paths:
-      - 'Dockerfile'
+      - Dockerfile
+
+  workflow_dispatch:
 
 jobs:
   build:
@@ -21,5 +25,22 @@ jobs:
         id: vars
         run: echo "::set-output name=version::$(cat VERSION)"
 
+      - name: Get timestamp for CI tag
+        uses: gerred/actions/current-time@master
+        id: current-time
+
+      - name: Run string replace
+        uses: frabert/replace-string-action@master
+        id: format-time
+        with:
+          pattern: '[:\.]+'
+          string: "${{ steps.current-time.outputs.time }}"
+          replace-with: '-'
+          flags: 'g'
+
       - name: Build the Docker Image.
-        run: docker build . --build-arg ANSIBLE_VERSION=${{ steps.vars.outputs.version }} --tag ${{ steps.vars.outputs.version }}-ci:$(date +%s)
+        uses: docker/build-push-action@v3
+        with:
+          build-args: |
+            ANSIBLE_VERSION=${{ steps.vars.outputs.version }}
+          tags: dcjulian29/ansible:${{ steps.vars.outputs.version }}-${{ steps.format-time.outputs.replaced }}
