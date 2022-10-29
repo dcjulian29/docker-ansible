@@ -25,7 +25,7 @@ jobs:
 
       - name: Grab the Ansible Version to use.
         id: vars
-        run: echo "::set-output name=version::$(cat VERSION)"
+        run: echo "version=$(cat VERSION)" >> $GITHUB_OUTPUT
 
       - name: Get timestamp for CI tag
         uses: gerred/actions/current-time@master
