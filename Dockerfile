@@ -5,7 +5,6 @@ ARG ANSIBLE_VERSION
 ENV ANSIBLE_VERSION=${ANSIBLE_VERSION}
 ENV PATH="/root/ansible/bin:/root/.local/bin:$PATH"
 
-#5 ~350MB
 RUN mkdir /etc/ansible /root/.ssh /root/.azure /root/.aws \
   && apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y vim colordiff \
@@ -17,22 +16,17 @@ RUN mkdir /etc/ansible /root/.ssh /root/.azure /root/.aws \
   && /root/ansible/bin/pip install jmespath requests passlib[bcrypt] \
   && /root/ansible/bin/pip install pywinrm pywinrm[credssp] \
   && /root/ansible/bin/pip install kerberos pywinrm[kerberos] \
+  && /root/ansible/bin/pip install ansible==${ANSIBLE_VERSION} \
+  && /root/ansible/bin/pip install ansible-lint[yamllint] \
   && rm -Rf /root/.cache
 
-#6 ~500MB
-RUN /root/ansible/bin/pip install ansible==${ANSIBLE_VERSION} \
-  && rm -Rf /root/.cache
+COPY ansible-galaxy.yml /root/ansible/ansible-galaxy.yml
 
-#7 ~500MB Azure
-RUN /root/ansible/bin/pip install ansible-lint[yamllint] \
-  && ansible-galaxy collection install azure.azcollection \
-  && /root/ansible/bin/pip install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements-azure.txt \
-  && rm -Rf /root/.cache
-
-#8 ~125MB AWS
-RUN /root/ansible/bin/pip install awscli \
-  && ansible-galaxy collection install amazon.aws \
-  && /root/ansible/bin/pip install -r ~/.ansible/collections/ansible_collections/amazon/aws/requirements.txt \
+RUN ansible-galaxy collection install -p /root/ansible/lib/python3.*/site-packages/ansible_collections \
+    -r /root/ansible/ansible-galaxy.yml \
+  && /root/ansible/bin/pip install proxmoxer \
+  && /root/ansible/bin/pip install -r /root/ansible/lib/python3.*/site-packages/ansible_collections/azure/azcollection/requirements-azure.txt \
+  && /root/ansible/bin/pip install -r /root/ansible/lib/python3.*/site-packages/ansible_collections/amazon/aws/requirements.txt \
   && rm -Rf /root/.cache
 
 VOLUME [ "/etc/ansible" ]
