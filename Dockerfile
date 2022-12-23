@@ -12,7 +12,7 @@ RUN mkdir /etc/ansible /root/.ssh /root/.azure /root/.aws \
   && python -m venv /root/ansible --upgrade --system-site-packages \
   && /root/ansible/bin/python -m pip install --upgrade pip \
   && /root/ansible/bin/pip install cffi PyYAML packaging jinja2 cryptography \
-  && /root/ansible/bin/pip install paramiko docker molecule toml \
+  && /root/ansible/bin/pip install paramiko docker molecule toml proxmoxer \
   && /root/ansible/bin/pip install jmespath requests passlib[bcrypt] \
   && /root/ansible/bin/pip install pywinrm pywinrm[credssp] \
   && /root/ansible/bin/pip install kerberos pywinrm[kerberos] \
@@ -22,8 +22,7 @@ RUN mkdir /etc/ansible /root/.ssh /root/.azure /root/.aws \
 
 COPY ansible-galaxy.yml /root/ansible/ansible-galaxy.yml
 
-RUN   /root/ansible/bin/pip install proxmoxer \
-  && ansible-galaxy collection install -p /root/ansible/lib/python3.*/site-packages/ansible_collections \
+RUN  ansible-galaxy collection install -p /root/ansible/lib/python3.*/site-packages/ansible_collections \
     -r /root/ansible/ansible-galaxy.yml \
   && /root/ansible/bin/pip install -r /root/ansible/lib/python3.*/site-packages/ansible_collections/azure/azcollection/requirements-azure.txt \
   && /root/ansible/bin/pip install -r /root/ansible/lib/python3.*/site-packages/ansible_collections/amazon/aws/requirements.txt \
