@@ -22,7 +22,7 @@ RUN mkdir /etc/ansible /root/.ssh /root/.azure /root/.aws \
 
 COPY ansible-galaxy.yml /root/ansible/ansible-galaxy.yml
 
-RUN   && /root/ansible/bin/pip install proxmoxer \
+RUN   /root/ansible/bin/pip install proxmoxer \
   && ansible-galaxy collection install -p /root/ansible/lib/python3.*/site-packages/ansible_collections \
     -r /root/ansible/ansible-galaxy.yml \
   && /root/ansible/bin/pip install -r /root/ansible/lib/python3.*/site-packages/ansible_collections/azure/azcollection/requirements-azure.txt \
