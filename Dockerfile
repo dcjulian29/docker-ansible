@@ -2,37 +2,32 @@ FROM python:slim-bullseye
 
 ARG ANSIBLE_VERSION
 
-ENV ANSIBLE_VERSION=${ANSIBLE_VERSION}
-ENV PATH="/root/ansible/bin:/root/.local/bin:$PATH"
-
-RUN mkdir /etc/ansible /root/.ssh /root/.azure /root/.aws \
-  && apt-get update \
+RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y vim colordiff git \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y gcc libkrb5-dev \
-  && python -m venv /root/ansible --upgrade --system-site-packages \
-  && /root/ansible/bin/python -m pip install --upgrade pip \
-  && /root/ansible/bin/pip install cffi PyYAML packaging jinja2 cryptography \
-  && /root/ansible/bin/pip install paramiko docker molecule toml proxmoxer \
-  && /root/ansible/bin/pip install jmespath requests passlib[bcrypt] \
-  && /root/ansible/bin/pip install pywinrm pywinrm[credssp] \
-  && /root/ansible/bin/pip install kerberos pywinrm[kerberos] \
-  && /root/ansible/bin/pip install ansible==${ANSIBLE_VERSION} \
-  && /root/ansible/bin/pip install ansible-lint[yamllint] \
-  && rm -Rf /root/.cache
+  && useradd -u 1000 -m -U ansible \
+  && mkdir /home/ansible/.ssh \
+  && chown ansible:ansible /home/ansible/.ssh \
+  && chmod 700 /home/ansible/.ssh \
+  && echo '#!/bin/bash\n\nDIR=/docker-entrypoint.d\nif [[ -d "$DIR" ]]; then\n  /bin/run-parts "$DIR"\nfi\n\n[[ ! -z "$@" ]] && exec "$@" || /bin/bash' > /docker-entrypoint.sh \
+  && chmod 755 /docker-entrypoint.sh \
+  && mkdir /docker-entrypoint.d \
+  && echo '#! /bin/bash\n\ncp -r /ssh/* ~/.ssh\nchmod 600 ~/.ssh/*\n' > /docker-entrypoint.d/00_ssh_keys_import \
+  && chmod 755 /docker-entrypoint.d/00_ssh_keys_import
 
-COPY ansible-galaxy.yml /root/ansible/ansible-galaxy.yml
+USER ansible:ansible
 
-RUN  ansible-galaxy collection install -p /root/ansible/lib/python3.*/site-packages/ansible_collections \
-    -r /root/ansible/ansible-galaxy.yml \
-  && /root/ansible/bin/pip install -r /root/ansible/lib/python3.*/site-packages/ansible_collections/azure/azcollection/requirements-azure.txt \
-  && /root/ansible/bin/pip install -r /root/ansible/lib/python3.*/site-packages/ansible_collections/amazon/aws/requirements.txt \
-  && rm -Rf /root/.cache
+ENV PATH="/home/ansible/.local/bin:$PATH" \
+    ANSIBLE_CONFIG="/home/ansible/data/ansible.cfg" \
+    ANSIBLE_VERSION=${ANSIBLE_VERSION}
 
-VOLUME [ "/etc/ansible" ]
-VOLUME [ "/root/.ssh" ]
-VOLUME [ "/root/.azure" ]
-VOLUME [ "/root/.aws" ]
+RUN pip install ansible==${ANSIBLE_VERSION} ansible-lint paramiko docker molecule \
+      toml proxmoxer pywinrm pywinrm[credssp] \
+  &&  ansible-galaxy collection install community.docker community.digitalocean \
+      community.general \
+  && rm -Rf /home/ansible/.cache
 
-WORKDIR /etc/ansible
+VOLUME [ "/home/ansible/data", "/ssh" ]
 
-ENTRYPOINT [ "/bin/bash" ]
+WORKDIR /home/ansible/data
+
+ENTRYPOINT [ "/docker-entrypoint.sh" ]

@@ -1,7 +1,0 @@
----
-collections:
-  - name: azure.azcollection
-  - name: amazon.aws
-  - name: community.docker
-  - name: community.digitalocean
-  - name: community.general
