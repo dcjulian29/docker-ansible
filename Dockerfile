@@ -8,7 +8,7 @@ RUN apt-get update \
   && mkdir /home/ansible/.ssh \
   && chown ansible:ansible /home/ansible/.ssh \
   && chmod 700 /home/ansible/.ssh \
-  && echo '#!/bin/bash\n\nDIR=/docker-entrypoint.d\nif [[ -d "$DIR" ]]; then\n  /bin/run-parts "$DIR"\nfi\n\n[[ ! -z "$@" ]] && eval "$*"\n\n[[ -z "$@" ]] && /bin/bash' > /docker-entrypoint.sh \
+  && echo '#!/bin/bash\n\nDIR=/docker-entrypoint.d\nif [[ -d "$DIR" ]]; then\n  /bin/run-parts "$DIR"\nfi\n\nif [[ ! -z "$@" ]]; then\n  eval "$*"\nelse\n  /bin/bash\nfi\n' > /docker-entrypoint.sh \
   && chmod 755 /docker-entrypoint.sh \
   && mkdir /docker-entrypoint.d \
   && echo '#! /bin/bash\n\ncp -r /ssh/* ~/.ssh\nchmod 600 ~/.ssh/*\n' > /docker-entrypoint.d/00_ssh_keys_import \
