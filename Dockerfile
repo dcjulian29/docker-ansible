@@ -20,10 +20,19 @@ ENV PATH="/home/ansible/.local/bin:$PATH" \
     ANSIBLE_CONFIG="/home/ansible/data/ansible.cfg" \
     ANSIBLE_VERSION=${ANSIBLE_VERSION}
 
-RUN pip install ansible==${ANSIBLE_VERSION} ansible-lint paramiko docker molecule \
-      toml proxmoxer pywinrm pywinrm[credssp] \
-  &&  ansible-galaxy collection install community.docker community.digitalocean \
-      community.general \
+RUN pip install ansible==${ANSIBLE_VERSION} \
+                ansible-lint \
+                paramiko \
+                docker \
+                molecule[lint,docker] \
+                toml \
+                proxmoxer \
+                pywinrm \
+                pywinrm[credssp] \
+  &&  ansible-galaxy collection install ansible.posix \
+                                        community.docker \
+                                        community.digitalocean \
+                                        community.general \
   && rm -Rf /home/ansible/.cache
 
 VOLUME [ "/home/ansible/data", "/ssh" ]
