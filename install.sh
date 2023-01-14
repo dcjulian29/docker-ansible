@@ -6,13 +6,16 @@
 if (( $EUID == 0 )); then
   apt-get update
   DEBIAN_FRONTEND=noninteractive apt-get install -y vim colordiff git
-  if [ ! -z "$(getent passwd 1000)" ]; then
+  if [ -z "$(getent passwd 1000)" ]; then
     useradd -u 1000 -m -U ansible
+
     mkdir /home/ansible/.ssh
     chown ansible:ansible /home/ansible/.ssh
     chmod 700 /home/ansible/.ssh
+
     echo '#!/bin/bash\n\nDIR=/docker-entrypoint.d\nif [[ -d "$DIR" ]]; then\n  /bin/run-parts "$DIR"\nfi\n\nif [[ ! -z "$@" ]]; then\n  eval "$*"\nelse\n  /bin/bash\nfi\n' > /docker-entrypoint.sh
     chmod 755 /docker-entrypoint.sh
+
     mkdir /docker-entrypoint.d
     echo '#! /bin/bash\n\ncp -r /ssh/* ~/.ssh\nchmod 600 ~/.ssh/*\n' > /docker-entrypoint.d/00_ssh_keys_import
     chmod 755 /docker-entrypoint.d/00_ssh_keys_import
@@ -27,9 +30,11 @@ else
                   proxmoxer \
                   pywinrm \
                   pywinrm[credssp]
+
   ansible-galaxy collection install ansible.posix \
                                     community.docker \
                                     community.digitalocean \
                                     community.general
+
   rm -Rf ~/.cache
 fi
