@@ -13,12 +13,37 @@ if (( $EUID == 0 )); then
     chown ansible:ansible /home/ansible/.ssh
     chmod 700 /home/ansible/.ssh
 
-    echo '#!/bin/bash\n\nDIR=/docker-entrypoint.d\nif [[ -d "$DIR" ]]; then\n  /bin/run-parts "$DIR"\nfi\n\nif [[ ! -z "$@" ]]; then\n  eval "$*"\nelse\n  /bin/bash\nfi\n' > /docker-entrypoint.sh
+    cat > /docker-entrypoint.sh << EOF
+#!/bin/bash
+
+DIR=/docker-entrypoint.d
+
+if [[ -d "\$DIR" ]]; then
+  /bin/run-parts "\$DIR"
+fi
+
+if [[ ! -z "\$@" ]]; then
+  eval "\$*"
+else
+  /bin/bash
+fi
+EOF
+
     chmod 755 /docker-entrypoint.sh
 
     mkdir /docker-entrypoint.d
-    echo '#! /bin/bash\n\ncp -r /ssh/* ~/.ssh\nchmod 600 ~/.ssh/*\n' > /docker-entrypoint.d/00_ssh_keys_import
+
+    cat > /docker-entrypoint.d/00_ssh_keys_import << EOF
+#! /bin/bash
+
+cp -r /ssh/* ~/.ssh
+chmod 600 ~/.ssh/*
+EOF
+
     chmod 755 /docker-entrypoint.d/00_ssh_keys_import
+    cat /docker-entrypoint.sh
+    dir /docker-entrypoint.d/
+    cat /docker-entrypoint.d/00_ssh_keys_import
   fi
 else
   pip install ansible==${ANSIBLE_VERSION} \
