@@ -9,12 +9,14 @@ if (( $EUID == 0 )); then
   if [ -z "$(getent passwd 1000)" ]; then
     useradd -u 1000 -m -U ansible
 
-    mkdir /home/ansible/.ssh
+    mkdir /home/ansible/.ssh /home/ansible/data
     chown ansible:ansible /home/ansible/.ssh
     chmod 700 /home/ansible/.ssh
 
     cat > /docker-entrypoint.sh << EOF
 #!/bin/bash
+
+git config --global --add safe.directory /home/ansible/data
 
 DIR=/docker-entrypoint.d
 
