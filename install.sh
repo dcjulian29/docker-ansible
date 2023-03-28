@@ -49,14 +49,15 @@ EOF
   fi
 else
   pip install ansible==${ANSIBLE_VERSION} \
-                  ansible-lint \
-                  paramiko \
-                  docker \
-                  molecule[lint,docker] \
-                  toml \
-                  proxmoxer \
-                  pywinrm \
-                  pywinrm[credssp]
+              ansible-lint \
+              paramiko \
+              docker \
+              molecule[lint,docker] \
+              toml \
+              proxmoxer \
+              pywinrm \
+              pywinrm[credssp] \
+              passlib
 
   ansible-galaxy collection install ansible.posix \
                                     community.docker \
