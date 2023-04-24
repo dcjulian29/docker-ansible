@@ -1,0 +1,42 @@
+name: Build and Release Tool
+
+on:
+  push:
+    tags:
+      - '[0-9]*'
+    branches:
+      - main
+
+jobs:
+  tool:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - run: git fetch --force --tags
+
+      - uses: actions/setup-go@v4
+        with:
+          cache-dependency-path: ${{ github.workspace }}/go.sum
+          go-version-file: ${{ github.workspace }}/go.mod
+
+      - run: go version
+
+      - uses: goreleaser/goreleaser-action@v4
+        with:
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1.1.1
+
+      - name: Publish Packages
+        run: >
+          nuget push **/*.nupkg
+          -ApiKey '${{ secrets.NUGET_API_KEY }}'
+          -Source '${{ vars.NUGET_URL }}'
+          -SkipDuplicate
