@@ -196,3 +196,5 @@ chocolateys:
     skip_publish: false
 snapshot:
   name_template: "{{ .Version }}-next"
+release:
+  prerelease: auto
