@@ -133,6 +133,16 @@ builds:
       - darwin
     goarch:
       - amd64
+  - id: molecule
+    binary: molecule
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - linux
+      - darwin
+    goarch:
+      - amd64
 archives:
   - files:
       - LICENSE
