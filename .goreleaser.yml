@@ -1,0 +1,198 @@
+---
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - id: ansible
+    binary: ansible
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - linux
+      - darwin
+    goarch:
+      - amd64
+  - id: ansible-community
+    binary: ansible-community
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - linux
+      - darwin
+    goarch:
+      - amd64
+  - id: ansible-config
+    binary: ansible-config
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - linux
+      - darwin
+    goarch:
+      - amd64
+  - id: ansible-connection
+    binary: ansible-connection
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - linux
+      - darwin
+    goarch:
+      - amd64
+  - id: ansible-console
+    binary: ansible-console
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - linux
+      - darwin
+    goarch:
+      - amd64
+  - id: ansible-doc
+    binary: ansible-doc
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - linux
+      - darwin
+    goarch:
+      - amd64
+  - id: ansible-galaxy
+    binary: ansible-galaxy
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - linux
+      - darwin
+    goarch:
+      - amd64
+  - id: ansible-inventory
+    binary: ansible-inventory
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - linux
+      - darwin
+    goarch:
+      - amd64
+  - id: ansible-lint
+    binary: ansible-lint
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - linux
+      - darwin
+    goarch:
+      - amd64
+  - id: ansible-playbook
+    binary: ansible-playbook
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - linux
+      - darwin
+    goarch:
+      - amd64
+  - id: ansible-pull
+    binary: ansible-pull
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - linux
+      - darwin
+    goarch:
+      - amd64
+  - id: ansible-test
+    binary: ansible-test
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - linux
+      - darwin
+    goarch:
+      - amd64
+  - id: ansible-vault
+    binary: ansible-vault
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - linux
+      - darwin
+    goarch:
+      - amd64
+archives:
+  - files:
+      - LICENSE
+    builds_info:
+      group: root
+      owner: root
+      mode: 0755
+    name_template: "dcjulian29.apps.ansible-via-docker_{{ .Version }}_{{ .Os }}"
+    format_overrides:
+      - format: zip
+        goos: windows
+nfpms:
+  - package_name: dcjulian29.apps.ansible-via-docker
+    file_name_template: "{{ .PackageName }}_{{ .Version }}"
+    homepage: https://github.com/dcjulian29/ansible-via-docker/
+    maintainer: Julian Easterling <julian@julianscorner.com>
+    license: Apache 2.0
+    dependencies:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    description: |-
+      ansible-via-docker allows the execution of Ansible and it's related tools via Docker containers
+      instead of relying on the underlying operating system to support and run Ansible. This allows
+      Ansible to run as a control node on a Windows-based OS with some limitations.
+
+      By utilizing Ansible's playbooks, roles, and modules, developers can automate the deployment of
+      software applications across multiple hosting providers, reducing the time and effort required to
+      manage complex infrastructure environments. These playbooks, roles, and modules enable developers to
+      create, manage, and provision infrastructure resources like virtual machines, load balancers, and
+      databases.
+    formats:
+      - apk
+      - deb
+      - rpm
+    bindir: /usr/local/bin
+    overrides:
+      apk:
+        dependencies:
+          - docker
+chocolateys:
+  - name: dcjulian29.apps.ansible-via-docker
+    authors: Julian Easterling <julian@julianscorner.com>
+    project_url: https://github.com/dcjulian29/docker-ansible/
+    copyright: 2023 Julian Easterling julian@julianscorner.com
+    license_url: https://github.com/dcjulian29/docker-ansible/blob/main/LICENSE
+    require_license_acceptance: false
+    bug_tracker_url: https://github.com/dcjulian29/docker-ansible/issues
+    description: |
+      ansible-via-docker allows the execution of Ansible and it's related tools via Docker containers
+      instead of relying on the underlying operating system to support and run Ansible. This allows
+      Ansible to run as a control node on a Windows-based OS with some limitations.
+
+      By utilizing Ansible's playbooks, roles, and modules, developers can automate the deployment of
+      software applications across multiple hosting providers, reducing the time and effort required to
+      manage complex infrastructure environments. These playbooks, roles, and modules enable developers to
+      create, manage, and provision infrastructure resources like virtual machines, load balancers, and
+      databases.
+    dependencies:
+      - id: docker-desktop
+    skip_publish: false
+snapshot:
+  name_template: "{{ .Version }}-next"

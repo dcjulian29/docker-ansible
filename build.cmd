@@ -13,3 +13,5 @@ if %errorlevel% neq 0 popd;exit /b %errorlevel%
 popd
 
 docker tag dcjulian29/ansible:%ANSIBLE_VERSION% dcjulian29/ansible:latest
+
+goreleaser --snapshot --skip-publish --clean
