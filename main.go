@@ -45,21 +45,17 @@ func main() {
 
 	binary := fmt.Sprintf("/home/ansible/.local/bin/%s", name)
 
-	var env []string
-	for _, e := range os.Environ() {
-		if strings.HasPrefix(e, "ANSIBLE") {
-			env = append(env, fmt.Sprintf("-e %s", e))
-		}
-	}
-
 	docker := []string{
 		"run",
 		"--rm",
 		"-it",
 	}
 
-	if len(env) > 0 {
-		docker = append(docker, env...)
+	for _, e := range os.Environ() {
+		if strings.HasPrefix(e, "ANSIBLE") {
+			docker = append(docker, "-e")
+			docker = append(docker, e)
+		}
 	}
 
 	docker = append(docker, "-v")
