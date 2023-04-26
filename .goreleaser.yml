@@ -203,8 +203,14 @@ chocolateys:
       databases.
     dependencies:
       - id: docker-desktop
+    api_key: "{{ .Env.CHOCO_API_KEY}}"
+    source_repo: "https://www.myget.org/F/dcjulian29-chocolatey/"
     skip_publish: false
 snapshot:
-  name_template: "{{ .Version }}-next"
-release:
-  prerelease: auto
+  name_template: "{{ incpatch .Version }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
