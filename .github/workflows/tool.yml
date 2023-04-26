@@ -3,12 +3,11 @@ name: Build and Release Tool
 on:
   push:
     tags:
-      - '[0-9]*'
+      - "[0-9].[0-9].[0-9]"
 
 jobs:
   tool:
-    if: startsWith(github.ref, 'refs/heads/main')
-    runs-on: ubuntu-latest
+    runs-on: windows-2022
 
     steps:
       - uses: actions/checkout@v3
@@ -26,16 +25,7 @@ jobs:
 
       - uses: goreleaser/goreleaser-action@v4
         with:
-          args: release --clean
+          args: release
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-
-      - name: Setup NuGet
-        uses: NuGet/setup-nuget@v1.1.1
-
-      - name: Publish Packages
-        run: >
-          nuget push **/*.nupkg
-          -ApiKey '${{ secrets.NUGET_API_KEY }}'
-          -Source '${{ vars.NUGET_URL }}'
-          -SkipDuplicate
+          GITHUB_TOKEN: ${{ github.token }}
+          CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
