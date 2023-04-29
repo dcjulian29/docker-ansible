@@ -1,9 +1,9 @@
-name: Build and Release Tool
+name: Release Tool
 
 on:
   push:
     tags:
-      - "[0-9].[0-9].[0-9]"
+      - "[0-9].*"
 
 jobs:
   tool:
@@ -21,7 +21,11 @@ jobs:
           cache-dependency-path: ${{ github.workspace }}/go.sum
           go-version-file: ${{ github.workspace }}/go.mod
 
-      - run: go version
+      - name: Grab the version to use.
+        id: vars
+        run: |
+          Write-Output "version=$(Get-Content ${{ github.workspace }}\VERSION)" `
+            | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding UTF8 -Append
 
       - uses: goreleaser/goreleaser-action@v4
         with:
@@ -29,3 +33,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
+          IMAGE_VERSION: ${{ steps.vars.outputs.version }}

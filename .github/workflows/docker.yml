@@ -1,0 +1,45 @@
+name: Build Docker Image
+
+on:
+  push:
+    paths:
+      - Dockerfile
+      - VERSION
+
+  pull_request:
+    paths:
+      - Dockerfile
+      - VERSION
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Grab the Ansible Version to use.
+        id: vars
+        run: echo "version=$(cat VERSION)" >> $GITHUB_OUTPUT
+
+      - name: Get timestamp for CI tag
+        uses: gerred/actions/current-time@master
+        id: current-time
+
+      - name: Run string replace
+        uses: frabert/replace-string-action@master
+        id: format-time
+        with:
+          pattern: '[:\.]+'
+          string: "${{ steps.current-time.outputs.time }}"
+          replace-with: '-'
+          flags: 'g'
+
+      - name: Build the Docker Image.
+        uses: docker/build-push-action@v3
+        with:
+          build-args: |
+            ANSIBLE_VERSION=${{ steps.vars.outputs.version }}
+          tags: dcjulian29/ansible:${{ steps.vars.outputs.version }}-${{ steps.format-time.outputs.replaced }}

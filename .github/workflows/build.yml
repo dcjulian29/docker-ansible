@@ -1,48 +1,36 @@
-name: Build Docker Image
-
+---
+name: Build Tool
 on:
   push:
-    branches:
-      - main
     paths:
-      - Dockerfile
-      - VERSION
+      - '**.go'
+      - 'go.mod'
+      - 'go.sum'
+
   pull_request:
-    branches:
-      - main
     paths:
-      - Dockerfile
-      - VERSION
+      - '**.go'
+      - 'go.mod'
+      - 'go.sum'
 
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-2022
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: Grab the Ansible Version to use.
-        id: vars
-        run: echo "version=$(cat VERSION)" >> $GITHUB_OUTPUT
-
-      - name: Get timestamp for CI tag
-        uses: gerred/actions/current-time@master
-        id: current-time
-
-      - name: Run string replace
-        uses: frabert/replace-string-action@master
-        id: format-time
         with:
-          pattern: '[:\.]+'
-          string: "${{ steps.current-time.outputs.time }}"
-          replace-with: '-'
-          flags: 'g'
+          fetch-depth: 0
 
-      - name: Build the Docker Image.
-        uses: docker/build-push-action@v3
+      - run: git fetch --force --tags
+
+      - uses: actions/setup-go@v4
         with:
-          build-args: |
-            ANSIBLE_VERSION=${{ steps.vars.outputs.version }}
-          tags: dcjulian29/ansible:${{ steps.vars.outputs.version }}-${{ steps.format-time.outputs.replaced }}
+          cache-dependency-path: ${{ github.workspace }}/go.sum
+          go-version-file: ${{ github.workspace }}/go.mod
+
+      - uses: goreleaser/goreleaser-action@v4
+        with:
+          args: build --snapshot --clean
