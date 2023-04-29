@@ -1,4 +1,6 @@
 ---
+env:
+  - IMAGE_VERSION={{ if index .Env "IMAGE_VERSION" }}{{ .Env.IMAGE_VERSION }}{{ else }}latest{{ end }}
 before:
   hooks:
     - go mod tidy
@@ -13,6 +15,7 @@ builds:
       - darwin
     goarch:
       - amd64
+    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
   - id: ansible-community
     binary: ansible-community
     env:
@@ -23,6 +26,7 @@ builds:
       - darwin
     goarch:
       - amd64
+    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
   - id: ansible-config
     binary: ansible-config
     env:
@@ -33,6 +37,7 @@ builds:
       - darwin
     goarch:
       - amd64
+    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
   - id: ansible-connection
     binary: ansible-connection
     env:
@@ -43,6 +48,7 @@ builds:
       - darwin
     goarch:
       - amd64
+    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
   - id: ansible-console
     binary: ansible-console
     env:
@@ -53,6 +59,7 @@ builds:
       - darwin
     goarch:
       - amd64
+    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
   - id: ansible-doc
     binary: ansible-doc
     env:
@@ -63,6 +70,7 @@ builds:
       - darwin
     goarch:
       - amd64
+    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
   - id: ansible-galaxy
     binary: ansible-galaxy
     env:
@@ -73,6 +81,7 @@ builds:
       - darwin
     goarch:
       - amd64
+    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
   - id: ansible-inventory
     binary: ansible-inventory
     env:
@@ -83,6 +92,7 @@ builds:
       - darwin
     goarch:
       - amd64
+    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
   - id: ansible-lint
     binary: ansible-lint
     env:
@@ -93,6 +103,7 @@ builds:
       - darwin
     goarch:
       - amd64
+    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
   - id: ansible-playbook
     binary: ansible-playbook
     env:
@@ -103,6 +114,7 @@ builds:
       - darwin
     goarch:
       - amd64
+    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
   - id: ansible-pull
     binary: ansible-pull
     env:
@@ -113,6 +125,7 @@ builds:
       - darwin
     goarch:
       - amd64
+    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
   - id: ansible-test
     binary: ansible-test
     env:
@@ -123,6 +136,7 @@ builds:
       - darwin
     goarch:
       - amd64
+    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
   - id: ansible-vault
     binary: ansible-vault
     env:
@@ -133,6 +147,7 @@ builds:
       - darwin
     goarch:
       - amd64
+    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
   - id: molecule
     binary: molecule
     env:
@@ -143,6 +158,7 @@ builds:
       - darwin
     goarch:
       - amd64
+    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
 archives:
   - files:
       - LICENSE

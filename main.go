@@ -24,6 +24,8 @@ import (
 	"strings"
 )
 
+var imageVersion string
+
 func main() {
 	name := strings.ReplaceAll(filepath.Base(os.Args[0]), ".exe", "")
 	args := os.Args[1:]
@@ -65,7 +67,7 @@ func main() {
 
 	image, f := os.LookupEnv("USER_ANSIBLE_IMAGE")
 	if !f {
-		image = "dcjulian29/ansible:latest"
+		image = fmt.Sprintf("dcjulian29/ansible:%s", imageVersion)
 	}
 
 	docker = append(docker, image)
