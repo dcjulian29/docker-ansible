@@ -59,10 +59,5 @@ else
               pywinrm[credssp] \
               passlib
 
-  ansible-galaxy collection install ansible.posix \
-                                    community.docker \
-                                    community.digitalocean \
-                                    community.general
-
   rm -Rf ~/.cache
 fi
