@@ -1,4 +1,4 @@
-FROM python:slim-bookworm
+FROM python:slim
 
 ARG ANSIBLE_VERSION
 
