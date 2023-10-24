@@ -1,11 +1,12 @@
 #! /bin/bash
+set -ex
 
-# If EUID == 0, this is running to install prerequistes.
-# Otherwise, this script will do a user install of Ansible
-
-if (( $EUID == 0 )); then
+pre_req () {
   apt-get update
   DEBIAN_FRONTEND=noninteractive apt-get install -y vim colordiff git
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python3-pip
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python3-virtualenv
+
   if [ -z "$(getent passwd 1000)" ]; then
     useradd -u 1000 -m -U ansible
 
@@ -47,17 +48,43 @@ EOF
     dir /docker-entrypoint.d/
     cat /docker-entrypoint.d/00_ssh_keys_import
   fi
-else
+
+  apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
+  apt-get autoremove
+  rm -rf /var/lib/apt/lists/*
+  apt-get clean
+}
+
+install () {
+  echo "Installing Ansible version '$ANSIBLE_VERSION'..."
+
+  virtualenv ~/.local/ansible --system-site-packages
+
+  source ~/.local/ansible/bin/activate
+
   pip install ansible==${ANSIBLE_VERSION} \
               ansible-lint \
-              paramiko \
               docker \
-              molecule[lint,docker] \
+              molecule \
               toml \
+              httpx \
               proxmoxer \
               pywinrm \
               pywinrm[credssp] \
-              passlib
+              passlib \
+              netaddr
+
+  export PATH="$PATH:~/.local/ansible/bin"
+
+  echo "export PATH=\$PATH:~/.local/ansible/bin" >> ~/.bashrc
 
   rm -Rf ~/.cache
+}
+
+# If EUID == 0, this is running to install prerequistes.
+# Otherwise, this script will do a user install of Ansible
+if (( $EUID == 0 )); then
+  pre_req
+else
+  install
 fi

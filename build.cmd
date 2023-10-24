@@ -14,4 +14,6 @@ popd
 
 docker tag dcjulian29/ansible:%ANSIBLE_VERSION% dcjulian29/ansible:latest
 
-goreleaser --snapshot --skip-publish --clean
+goreleaser release --snapshot --skip-publish --clean
+
+endlocal

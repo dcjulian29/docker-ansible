@@ -8,8 +8,7 @@ RUN bash /install.sh
 
 USER ansible:ansible
 
-ENV PATH="/home/ansible/.local/bin:$PATH" \
-    ANSIBLE_CONFIG="/home/ansible/data/ansible.cfg" \
+ENV ANSIBLE_CONFIG="/home/ansible/data/ansible.cfg" \
     ANSIBLE_VERSION=${ANSIBLE_VERSION}
 
 RUN bash /install.sh

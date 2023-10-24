@@ -45,7 +45,7 @@ func main() {
 	data := strings.ReplaceAll(fmt.Sprintf("%s:/home/ansible/data", pwd), "\\", "/")
 	ssh := strings.ReplaceAll(fmt.Sprintf("%s:/ssh", keys), "\\", "/")
 
-	binary := fmt.Sprintf("/home/ansible/.local/bin/%s", name)
+	binary := fmt.Sprintf("/home/ansible/.local/ansible/bin/%s", name)
 
 	docker := []string{
 		"run",
