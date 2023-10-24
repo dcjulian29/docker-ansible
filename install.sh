@@ -3,8 +3,10 @@ set -ex
 
 pre_req () {
   apt-get update
-  DEBIAN_FRONTEND=noninteractive apt-get install -y vim colordiff git
-  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python3-pip
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ssh-client
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends vim
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends colordiff
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python3-virtualenv
 
   if [ -z "$(getent passwd 1000)" ]; then
