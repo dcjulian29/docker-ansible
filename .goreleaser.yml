@@ -11,8 +11,6 @@ builds:
       - CGO_ENABLED=0
     goos:
       - windows
-      - linux
-      - darwin
     goarch:
       - amd64
     ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
@@ -22,8 +20,6 @@ builds:
       - CGO_ENABLED=0
     goos:
       - windows
-      - linux
-      - darwin
     goarch:
       - amd64
     ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
@@ -33,8 +29,6 @@ builds:
       - CGO_ENABLED=0
     goos:
       - windows
-      - linux
-      - darwin
     goarch:
       - amd64
     ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
@@ -44,8 +38,6 @@ builds:
       - CGO_ENABLED=0
     goos:
       - windows
-      - linux
-      - darwin
     goarch:
       - amd64
     ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
@@ -55,8 +47,6 @@ builds:
       - CGO_ENABLED=0
     goos:
       - windows
-      - linux
-      - darwin
     goarch:
       - amd64
     ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
@@ -66,8 +56,6 @@ builds:
       - CGO_ENABLED=0
     goos:
       - windows
-      - linux
-      - darwin
     goarch:
       - amd64
     ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
@@ -77,8 +65,6 @@ builds:
       - CGO_ENABLED=0
     goos:
       - windows
-      - linux
-      - darwin
     goarch:
       - amd64
     ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
@@ -88,8 +74,6 @@ builds:
       - CGO_ENABLED=0
     goos:
       - windows
-      - linux
-      - darwin
     goarch:
       - amd64
     ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
@@ -99,8 +83,6 @@ builds:
       - CGO_ENABLED=0
     goos:
       - windows
-      - linux
-      - darwin
     goarch:
       - amd64
     ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
@@ -110,8 +92,6 @@ builds:
       - CGO_ENABLED=0
     goos:
       - windows
-      - linux
-      - darwin
     goarch:
       - amd64
     ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
@@ -121,8 +101,6 @@ builds:
       - CGO_ENABLED=0
     goos:
       - windows
-      - linux
-      - darwin
     goarch:
       - amd64
     ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
@@ -132,8 +110,6 @@ builds:
       - CGO_ENABLED=0
     goos:
       - windows
-      - linux
-      - darwin
     goarch:
       - amd64
     ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
@@ -143,8 +119,6 @@ builds:
       - CGO_ENABLED=0
     goos:
       - windows
-      - linux
-      - darwin
     goarch:
       - amd64
     ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
@@ -154,51 +128,16 @@ builds:
       - CGO_ENABLED=0
     goos:
       - windows
-      - linux
-      - darwin
     goarch:
       - amd64
     ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
 archives:
   - files:
       - LICENSE
-    builds_info:
-      group: root
-      owner: root
-      mode: 0755
-    name_template: "dcjulian29.apps.ansible-via-docker_{{ .Version }}_{{ .Os }}"
+    name_template: "dcjulian29.apps.ansible-via-docker_{{ .Version }}"
     format_overrides:
       - format: zip
         goos: windows
-nfpms:
-  - package_name: dcjulian29.apps.ansible-via-docker
-    file_name_template: "{{ .PackageName }}_{{ .Version }}"
-    homepage: https://github.com/dcjulian29/ansible-via-docker/
-    maintainer: Julian Easterling <julian@julianscorner.com>
-    license: Apache 2.0
-    dependencies:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
-    description: |-
-      ansible-via-docker allows the execution of Ansible and it's related tools via Docker containers
-      instead of relying on the underlying operating system to support and run Ansible. This allows
-      Ansible to run as a control node on a Windows-based OS with some limitations.
-
-      By utilizing Ansible's playbooks, roles, and modules, developers can automate the deployment of
-      software applications across multiple hosting providers, reducing the time and effort required to
-      manage complex infrastructure environments. These playbooks, roles, and modules enable developers to
-      create, manage, and provision infrastructure resources like virtual machines, load balancers, and
-      databases.
-    formats:
-      - apk
-      - deb
-      - rpm
-    bindir: /usr/local/bin
-    overrides:
-      apk:
-        dependencies:
-          - docker
 chocolateys:
   - name: dcjulian29.apps.ansible-via-docker
     authors: Julian Easterling <julian@julianscorner.com>
@@ -228,5 +167,6 @@ changelog:
   sort: asc
   filters:
     exclude:
+      - '^admin:'
       - '^docs:'
       - '^test:'
