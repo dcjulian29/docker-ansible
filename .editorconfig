@@ -1,7 +1,10 @@
 root = true
 
-[{Makefile,go.mod,go.sum,*.go,.gitmodules}]
+[{go.mod,go.sum,*.go}]
 indent_style = tab
+
+[*.sh]
+end_of_line = lf
 
 [*]
 charset = utf-8
