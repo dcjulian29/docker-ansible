@@ -74,7 +74,8 @@ install () {
               pywinrm \
               pywinrm[credssp] \
               passlib \
-              netaddr
+              netaddr \
+              kubernetes
 
   export PATH="$PATH:~/.local/ansible/bin"
 
