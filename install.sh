@@ -8,6 +8,22 @@ pre_req () {
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends colordiff
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python3-virtualenv
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends gpg curl
+
+  curl -fsSL "https://baltocdn.com/helm/signing.asc" | \
+    gpg --dearmor -o /usr/share/keyrings/helm.gpg
+
+  echo "deb [arch=$(dpkg --print-architecture) \
+    signed-by=/usr/share/keyrings/helm.gpg] \
+    https://baltocdn.com/helm/stable/debian/ all main" \
+    | tee /etc/apt/sources.list.d/helm.list > /dev/null
+
+  apt-get update
+
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends helm
+
+  rm /etc/apt/sources.list.d/helm.list
+  rm /usr/share/keyrings/helm.gpg
 
   if [ -z "$(getent passwd 1000)" ]; then
     useradd -u 1000 -m -U ansible
@@ -50,6 +66,8 @@ EOF
     dir /docker-entrypoint.d/
     cat /docker-entrypoint.d/00_ssh_keys_import
   fi
+
+  apt-get remove -y gpg curl
 
   apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
   apt-get autoremove
