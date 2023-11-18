@@ -3,12 +3,15 @@ set -ex
 
 pre_req () {
   apt-get update
+
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ssh-client
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends vim
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends colordiff
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python3-virtualenv
-  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends gpg curl
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends gpg
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends curl
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends less
 
   curl -fsSL "https://baltocdn.com/helm/signing.asc" | \
     gpg --dearmor -o /usr/share/keyrings/helm.gpg
@@ -62,12 +65,7 @@ chmod 600 ~/.ssh/*
 EOF
 
     chmod 755 /docker-entrypoint.d/00_ssh_keys_import
-    cat /docker-entrypoint.sh
-    dir /docker-entrypoint.d/
-    cat /docker-entrypoint.d/00_ssh_keys_import
   fi
-
-  apt-get remove -y gpg curl
 
   apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
   apt-get autoremove
@@ -94,10 +92,6 @@ install () {
               passlib \
               netaddr \
               kubernetes
-
-  export PATH="$PATH:~/.local/ansible/bin"
-
-  echo "export PATH=\$PATH:~/.local/ansible/bin" >> ~/.bashrc
 
   rm -Rf ~/.cache
 }
