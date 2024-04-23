@@ -19,6 +19,12 @@ jobs:
           cache-dependency-path: ${{ github.workspace }}/go.sum
           go-version-file: ${{ github.workspace }}/go.mod
 
+      - name: Grab the version to use.
+        id: vars
+        run: |
+          Write-Output "version=$(Get-Content ${{ github.workspace }}\VERSION)" `
+            | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding UTF8 -Append
+
       - uses: goreleaser/goreleaser-action@v4
         with:
           args: build --snapshot --clean
