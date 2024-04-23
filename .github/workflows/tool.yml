@@ -31,12 +31,22 @@ jobs:
         env:
           ANSIBLE_VERSION: ${{ steps.vars.outputs.version }}
 
+      - uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}
+          key: dcjulian29-ansible
+
   release:
     if: contains(github.ref, 'tags/')
     needs: [build]
     runs-on: windows-2022
 
     steps:
+      - uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}
+          key: dcjulian29-ansible
+
       - name: Grab the version to use.
         id: vars
         run: |
