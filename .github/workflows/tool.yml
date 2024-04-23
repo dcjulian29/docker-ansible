@@ -28,6 +28,8 @@ jobs:
       - uses: goreleaser/goreleaser-action@v4
         with:
           args: build --snapshot --clean
+        env:
+          ANSIBLE_VERSION: ${{ steps.vars.outputs.version }}
 
   release:
     if: contains(github.ref, 'tags/')
