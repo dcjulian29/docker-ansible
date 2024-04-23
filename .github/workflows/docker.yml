@@ -1,17 +1,17 @@
-name: Build Docker Image
+name: Ansible Docker Image
 
 on:
   push:
     paths:
       - Dockerfile
+      - install.sh
       - VERSION
 
   pull_request:
     paths:
       - Dockerfile
+      - install.sh
       - VERSION
-
-  workflow_dispatch:
 
 jobs:
   build:
@@ -19,10 +19,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-      - name: Grab the Ansible Version to use.
+      - run: git fetch --force --tags
+
+      - name: Grab the version to use.
         id: vars
-        run: echo "version=$(cat VERSION)" >> $GITHUB_OUTPUT
+        run: echo "version=$(cat ${{ github.workspace }}/VERSION)" >> $GITHUB_OUTPUT
 
       - name: Get timestamp for CI tag
         uses: gerred/actions/current-time@master
@@ -43,3 +47,34 @@ jobs:
           build-args: |
             ANSIBLE_VERSION=${{ steps.vars.outputs.version }}
           tags: dcjulian29/ansible:${{ steps.vars.outputs.version }}-${{ steps.format-time.outputs.replaced }}
+  release:
+    if: contains(github.ref, 'tags/')
+    needs: [build]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - run: git fetch --force --tags
+
+      - name: Login to DockerHub.
+        uses: docker/login-action@v2
+        with:
+          username: dcjulian29
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Grab the version to use.
+        id: vars
+        run: echo "version=$(cat ${{ github.workspace }}/VERSION)" >> $GITHUB_OUTPUT
+
+      - name: Build and push Docker image.
+        uses: docker/build-push-action@v3
+        with:
+          build-args: |
+            ANSIBLE_VERSION=${{ steps.vars.outputs.version }}
+          push: true
+          tags: |
+            dcjulian29/ansible:${{ steps.vars.outputs.version }}
+            dcjulian29/ansible:latest
