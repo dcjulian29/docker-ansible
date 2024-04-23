@@ -20,7 +20,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"runtime"
 	"strings"
 )
 
@@ -34,12 +33,8 @@ func main() {
 
 	keys, f := os.LookupEnv("USER_ANSIBLE_KEYS")
 	if !f {
-		if runtime.GOOS == "windows" {
-			keys = fmt.Sprintf("%s/.ssh/wsl", os.Getenv("USERPROFILE"))
-		} else {
-			home, _ := os.UserHomeDir()
-			keys = fmt.Sprintf("%s/.ssh", home)
-		}
+		home, _ := os.UserHomeDir()
+		keys = fmt.Sprintf("%s/.ssh", home)
 	}
 
 	data := strings.ReplaceAll(fmt.Sprintf("%s:/home/ansible/data", pwd), "\\", "/")
