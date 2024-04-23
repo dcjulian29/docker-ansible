@@ -6,6 +6,7 @@
     "goarch",
     "GOBIN",
     "GOPATH",
+    "ldflags",
     "nfpms",
     "nupkg"
   ]
