@@ -1,6 +1,4 @@
 ---
-env:
-  - IMAGE_VERSION={{ if index .Env "IMAGE_VERSION" }}{{ .Env.IMAGE_VERSION }}{{ else }}latest{{ end }}
 before:
   hooks:
     - go mod tidy
@@ -13,7 +11,7 @@ builds:
       - windows
     goarch:
       - amd64
-    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
+    ldflags: -s -w -X main.imageVersion={{ .Env.ANSIBLE_VERSION }}
   - id: ansible-community
     binary: ansible-community
     env:
@@ -22,7 +20,7 @@ builds:
       - windows
     goarch:
       - amd64
-    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
+    ldflags: -s -w -X main.imageVersion={{ .Env.ANSIBLE_VERSION }}
   - id: ansible-config
     binary: ansible-config
     env:
@@ -31,7 +29,7 @@ builds:
       - windows
     goarch:
       - amd64
-    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
+    ldflags: -s -w -X main.imageVersion={{ .Env.ANSIBLE_VERSION }}
   - id: ansible-connection
     binary: ansible-connection
     env:
@@ -40,7 +38,7 @@ builds:
       - windows
     goarch:
       - amd64
-    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
+    ldflags: -s -w -X main.imageVersion={{ .Env.ANSIBLE_VERSION }}
   - id: ansible-console
     binary: ansible-console
     env:
@@ -49,7 +47,7 @@ builds:
       - windows
     goarch:
       - amd64
-    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
+    ldflags: -s -w -X main.imageVersion={{ .Env.ANSIBLE_VERSION }}
   - id: ansible-doc
     binary: ansible-doc
     env:
@@ -58,7 +56,7 @@ builds:
       - windows
     goarch:
       - amd64
-    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
+    ldflags: -s -w -X main.imageVersion={{ .Env.ANSIBLE_VERSION }}
   - id: ansible-galaxy
     binary: ansible-galaxy
     env:
@@ -67,7 +65,7 @@ builds:
       - windows
     goarch:
       - amd64
-    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
+    ldflags: -s -w -X main.imageVersion={{ .Env.ANSIBLE_VERSION }}
   - id: ansible-inventory
     binary: ansible-inventory
     env:
@@ -76,7 +74,7 @@ builds:
       - windows
     goarch:
       - amd64
-    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
+    ldflags: -s -w -X main.imageVersion={{ .Env.ANSIBLE_VERSION }}
   - id: ansible-lint
     binary: ansible-lint
     env:
@@ -85,7 +83,7 @@ builds:
       - windows
     goarch:
       - amd64
-    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
+    ldflags: -s -w -X main.imageVersion={{ .Env.ANSIBLE_VERSION }}
   - id: ansible-playbook
     binary: ansible-playbook
     env:
@@ -94,7 +92,7 @@ builds:
       - windows
     goarch:
       - amd64
-    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
+    ldflags: -s -w -X main.imageVersion={{ .Env.ANSIBLE_VERSION }}
   - id: ansible-pull
     binary: ansible-pull
     env:
@@ -103,7 +101,16 @@ builds:
       - windows
     goarch:
       - amd64
-    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
+    ldflags: -s -w -X main.imageVersion={{ .Env.ANSIBLE_VERSION }}
+  - id: ansible-shell
+    binary: ansible-shell
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+    goarch:
+      - amd64
+    ldflags: -s -w -X main.imageVersion={{ .Env.ANSIBLE_VERSION }}
   - id: ansible-test
     binary: ansible-test
     env:
@@ -112,7 +119,7 @@ builds:
       - windows
     goarch:
       - amd64
-    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
+    ldflags: -s -w -X main.imageVersion={{ .Env.ANSIBLE_VERSION }}
   - id: ansible-vault
     binary: ansible-vault
     env:
@@ -121,7 +128,7 @@ builds:
       - windows
     goarch:
       - amd64
-    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
+    ldflags: -s -w -X main.imageVersion={{ .Env.ANSIBLE_VERSION }}
   - id: molecule
     binary: molecule
     env:
@@ -130,7 +137,7 @@ builds:
       - windows
     goarch:
       - amd64
-    ldflags: -s -w -X main.imageVersion={{ .Env.IMAGE_VERSION }}
+    ldflags: -s -w -X main.imageVersion={{ .Env.ANSIBLE_VERSION }}
 archives:
   - files:
       - LICENSE
