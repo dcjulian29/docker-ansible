@@ -31,21 +31,22 @@ jobs:
         env:
           ANSIBLE_VERSION: ${{ steps.vars.outputs.version }}
 
-      - uses: actions/cache@v3
-        with:
-          path: ${{ github.workspace }}
-          key: dcjulian29-ansible
-
   release:
     if: contains(github.ref, 'tags/')
     needs: [build]
     runs-on: windows-2022
 
     steps:
-      - uses: actions/cache@v3
+      - uses: actions/checkout@v3
         with:
-          path: ${{ github.workspace }}
-          key: dcjulian29-ansible
+          fetch-depth: 0
+
+      - run: git fetch --force --tags
+
+      - uses: actions/setup-go@v4
+        with:
+          cache-dependency-path: ${{ github.workspace }}/go.sum
+          go-version-file: ${{ github.workspace }}/go.mod
 
       - name: Grab the version to use.
         id: vars
@@ -55,7 +56,7 @@ jobs:
 
       - uses: goreleaser/goreleaser-action@v4
         with:
-          args: release --clean
+          args: release
         env:
           GITHUB_TOKEN: ${{ github.token }}
           CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
