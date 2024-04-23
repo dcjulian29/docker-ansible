@@ -42,6 +42,11 @@ func main() {
 
 	binary := fmt.Sprintf("/home/ansible/.local/ansible/bin/%s", name)
 
+	if name == "ansible-shell" {
+		binary = "bash"
+		args = []string{}
+	}
+
 	docker := []string{
 		"run",
 		"--rm",
