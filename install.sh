@@ -12,6 +12,7 @@ pre_req () {
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends gpg
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends curl
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends less
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends sudo
 
   curl -fsSL "https://baltocdn.com/helm/signing.asc" | \
     gpg --dearmor -o /usr/share/keyrings/helm.gpg
@@ -31,9 +32,7 @@ pre_req () {
   if [ -z "$(getent passwd 1000)" ]; then
     useradd -u 1000 -m -U ansible
 
-    mkdir /home/ansible/.ssh /home/ansible/data
-    chown ansible:ansible /home/ansible/.ssh
-    chmod 700 /home/ansible/.ssh
+    mkdir /ssh /home/ansible/data
 
     cat > /docker-entrypoint.sh << EOF
 #!/bin/bash
@@ -60,12 +59,17 @@ EOF
     cat > /docker-entrypoint.d/00_ssh_keys_import << EOF
 #! /bin/bash
 
-cp -r /ssh/* ~/.ssh
+sudo cp -r /ssh ~/
+sudo mv ~/ssh ~/.ssh
+sudo chown -R ansible:ansible ~/.ssh
+chmod 700 ~/.ssh
 chmod 600 ~/.ssh/*
 EOF
 
     chmod 755 /docker-entrypoint.d/00_ssh_keys_import
   fi
+
+  echo 'ansible ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
   apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
   apt-get autoremove
