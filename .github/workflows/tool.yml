@@ -9,13 +9,13 @@ jobs:
     runs-on: windows-2022
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - run: git fetch --force --tags
 
-      - uses: actions/setup-go@v4
+      - uses: actions/setup-go@v5
         with:
           cache-dependency-path: ${{ github.workspace }}/go.sum
           go-version-file: ${{ github.workspace }}/go.mod
@@ -26,7 +26,7 @@ jobs:
           Write-Output "version=$(Get-Content ${{ github.workspace }}\VERSION)" `
             | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding UTF8 -Append
 
-      - uses: goreleaser/goreleaser-action@v4
+      - uses: goreleaser/goreleaser-action@v6
         with:
           args: build --snapshot --clean
         env:
@@ -38,13 +38,13 @@ jobs:
     runs-on: windows-2022
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - run: git fetch --force --tags
 
-      - uses: actions/setup-go@v4
+      - uses: actions/setup-go@v5
         with:
           cache-dependency-path: ${{ github.workspace }}/go.sum
           go-version-file: ${{ github.workspace }}/go.mod
@@ -55,7 +55,7 @@ jobs:
           Write-Output "version=$(Get-Content ${{ github.workspace }}\VERSION)" `
             | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding UTF8 -Append
 
-      - uses: goreleaser/goreleaser-action@v4
+      - uses: goreleaser/goreleaser-action@v6
         with:
           args: release
         env:

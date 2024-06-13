@@ -1,5 +1,8 @@
 FROM python:slim
 
+LABEL org.opencontainers.image.source="https://github.com/dcjulian29/docker-ansible"
+LABEL org.opencontainers.image.description="A Docker Container and execution tool for Ansible"
+
 ARG ANSIBLE_VERSION
 
 COPY install.sh /install.sh
