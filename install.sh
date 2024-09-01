@@ -8,11 +8,16 @@ pre_req () {
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends vim
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends colordiff
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python3-pip
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python3-virtualenv
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends gpg
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends curl
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends less
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends sudo
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends libkrb5-dev
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python3-kerberos
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python3-winrm
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python3-gssapi
 
   curl -fsSL "https://baltocdn.com/helm/signing.asc" | \
     gpg --dearmor -o /usr/share/keyrings/helm.gpg
@@ -44,6 +49,8 @@ DIR=/docker-entrypoint.d
 if [[ -d "\$DIR" ]]; then
   /bin/run-parts "\$DIR"
 fi
+
+source ~/.local/ansible/bin/activate
 
 if [[ ! -z "\$@" ]]; then
   eval "\$*"
@@ -84,20 +91,15 @@ install () {
 
   source ~/.local/ansible/bin/activate
 
-  pip install ansible==${ANSIBLE_VERSION} \
-              ansible-lint \
-              docker \
-              molecule \
-              toml \
-              httpx \
-              proxmoxer \
-              pywinrm \
-              pywinrm[credssp] \
-              passlib \
-              netaddr \
-              kubernetes
+  pip install ansible==${ANSIBLE_VERSION} ansible-lint
+  pip install docker kubernetes python-vagrant proxmoxer
+  pip install molecule testinfra
+  pip install toml httpx passlib netaddr
+  pip install pywinrm pywinrm[credssp]
 
   rm -Rf ~/.cache
+
+  export PATH="$PATH:~/.local/ansible/bin"
 }
 
 # If EUID == 0, this is running to install prerequistes.
