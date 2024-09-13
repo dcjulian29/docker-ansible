@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 set -ex
 
 pre_req () {
@@ -8,16 +8,10 @@ pre_req () {
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends vim
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends colordiff
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git
-  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python3-pip
-  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python3-virtualenv
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends gpg
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends curl
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends less
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends sudo
-  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends libkrb5-dev
-  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python3-kerberos
-  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python3-winrm
-  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python3-gssapi
 
   curl -fsSL "https://baltocdn.com/helm/signing.asc" | \
     gpg --dearmor -o /usr/share/keyrings/helm.gpg
@@ -87,7 +81,7 @@ EOF
 install () {
   echo "Installing Ansible version '$ANSIBLE_VERSION'..."
 
-  virtualenv ~/.local/ansible --system-site-packages
+  python -m venv ~/.local/ansible
 
   source ~/.local/ansible/bin/activate
 
