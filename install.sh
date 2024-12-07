@@ -87,7 +87,7 @@ install () {
 
   pip install ansible==${ANSIBLE_VERSION} ansible-lint
   pip install docker kubernetes python-vagrant proxmoxer
-  pip install molecule testinfra
+  pip install molecule testinfra bcrypt
   pip install toml httpx passlib netaddr
   pip install pywinrm pywinrm[credssp]
 
