@@ -51,8 +51,6 @@ func main() {
 		"run",
 		"--rm",
 		"-it",
-		"--network",
-		"host",
 	}
 
 	for _, e := range os.Environ() {
