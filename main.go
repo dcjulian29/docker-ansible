@@ -58,6 +58,11 @@ func main() {
 			docker = append(docker, "-e")
 			docker = append(docker, e)
 		}
+
+		if strings.HasPrefix(e, "K8S") {
+			docker = append(docker, "-e")
+			docker = append(docker, e)
+		}
 	}
 
 	docker = append(docker, "-v")
