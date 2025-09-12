@@ -13,13 +13,14 @@ pre_req () {
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends less
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends sudo
 
-  curl -fsSL "https://baltocdn.com/helm/signing.asc" | \
+
+  curl -fsSL https://packages.buildkite.com/helm-linux/helm-debian/gpgkey | \
     gpg --dearmor -o /usr/share/keyrings/helm.gpg
 
   echo "deb [arch=$(dpkg --print-architecture) \
     signed-by=/usr/share/keyrings/helm.gpg] \
-    https://baltocdn.com/helm/stable/debian/ all main" \
-    | tee /etc/apt/sources.list.d/helm.list > /dev/null
+    https://packages.buildkite.com/helm-linux/helm-debian/any/ any main" \
+    | tee /etc/apt/sources.list.d/helm.list
 
   apt-get update
 

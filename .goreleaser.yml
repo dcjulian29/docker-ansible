@@ -3,6 +3,7 @@ version: 2
 before:
   hooks:
     - go mod tidy
+    - go mod verify
 builds:
   - id: ansible
     binary: ansible
@@ -144,7 +145,7 @@ archives:
       - LICENSE
     name_template: "dcjulian29.apps.ansible-via-docker_{{ .Version }}"
     format_overrides:
-      - format: zip
+      - formats: [ "zip" ]
         goos: windows
 chocolateys:
   - name: dcjulian29.apps.ansible-via-docker
@@ -170,7 +171,7 @@ chocolateys:
     source_repo: "https://www.myget.org/F/dcjulian29-chocolatey/"
     skip_publish: false
 snapshot:
-  name_template: "{{ incpatch .Version }}-next"
+  version_template: "{{ incpatch .Version }}-next"
 changelog:
   sort: asc
   filters:
