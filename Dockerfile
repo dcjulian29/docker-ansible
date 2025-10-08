@@ -1,4 +1,4 @@
-FROM python:3.13.7-slim-bookworm
+FROM python:3.14.0-slim-bookworm
 
 LABEL org.opencontainers.image.source="https://github.com/dcjulian29/docker-ansible"
 LABEL org.opencontainers.image.description="A Docker Container and execution tool for Ansible"
