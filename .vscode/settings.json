@@ -2,12 +2,22 @@
   "cSpell.words": [
     "CHOCO",
     "chocolateys",
+    "credssp",
     "dcjulian",
     "goarch",
     "GOBIN",
     "GOPATH",
+    "httpx",
     "ldflags",
+    "netaddr",
     "nfpms",
-    "nupkg"
+    "NOPASSWD",
+    "nupkg",
+    "popd",
+    "prerequistes",
+    "proxmoxer",
+    "pushd",
+    "pywinrm",
+    "venv"
   ]
 }
