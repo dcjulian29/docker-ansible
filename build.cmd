@@ -3,17 +3,17 @@ setlocal
 
 pushd %~dp0
 
-for /f "delims=" %%x in (version) do set ANSIBLE_VERSION=%%x
+for /f "delims=" %%x in (version) do set IMAGE_VERSION=%%x
 
-docker build --progress plain --pull --build-arg ANSIBLE_VERSION=%ANSIBLE_VERSION% -t dcjulian29/ansible:%ANSIBLE_VERSION% .
+docker build --progress plain --build-arg ANSIBLE_VERSION=%IMAGE_VERSION% -t dcjulian29/ansible:%IMAGE_VERSION% .
 
-if %errorlevel% neq 0 goto FIN
+if %errorlevel% neq 0 goto FINAL
 
-echo.
+docker tag dcjulian29/ansible:%IMAGE_VERSION% dcjulian29/ansible:latest
 
-goreleaser release --skip publish,validate --clean
+:FINAL
 
-:FIN
+goreleaser --snapshot --clean
 
 popd
 
