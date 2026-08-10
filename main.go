@@ -18,11 +18,11 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
 
-	"golang.org/x/term"
+	"github.com/dcjulian29/go-toolbox/docker"
+	"github.com/dcjulian29/go-toolbox/textformat"
 )
 
 var imageVersion string
@@ -31,81 +31,82 @@ func main() {
 	name := strings.ReplaceAll(filepath.Base(os.Args[0]), ".exe", "")
 	args := os.Args[1:]
 
-	pwd, _ := os.Getwd()
-
-	keys, f := os.LookupEnv("USER_ANSIBLE_KEYS")
-	if !f {
-		home, _ := os.UserHomeDir()
-		keys = fmt.Sprintf("%s/.ssh", home)
+	pwd, err := os.Getwd()
+	if err != nil {
+		fmt.Println(textformat.Fatal(err.Error()))
+		os.Exit(1)
 	}
-
-	data := strings.ReplaceAll(fmt.Sprintf("%s:/home/ansible/data", pwd), "\\", "/")
-	ssh := strings.ReplaceAll(fmt.Sprintf("%s:/ssh", keys), "\\", "/")
 
 	binary := fmt.Sprintf("/home/ansible/.local/ansible/bin/%s", name)
 
 	if name == "ansible-shell" {
 		binary = "bash"
-		args = []string{}
+		args = nil
 	}
 
-	docker := []string{
-		"run",
-		"--rm",
-		"-i",
+	image, tag := imageReference()
+
+	opts := docker.ContainerOptions{
+		AdditionalArgs:       args,
+		Command:              binary,
+		EnvironmentVariables: environmentVariables(),
+		Image:                image,
+		Interactive:          true,
+		Tag:                  tag,
+		Volumes: []string{
+			unixPath(fmt.Sprintf("%s:/ssh", sshKeyDirectory())),
+			unixPath(fmt.Sprintf("%s:/home/ansible/data", pwd)),
+		},
 	}
 
-	// Docker refuses to start when -t is requested but stdin is not a terminal,
-	// so only allocate one when the host actually has a terminal attached. This
-	// keeps the same binary usable from a shell, a pipe, and CI.
-	if stdinIsTerminal() {
-		docker = append(docker, "-t")
-	}
-
-	for _, e := range os.Environ() {
-		if strings.HasPrefix(e, "ANSIBLE") {
-			docker = append(docker, "-e")
-			docker = append(docker, e)
-		}
-
-		if strings.HasPrefix(e, "K8S") {
-			docker = append(docker, "-e")
-			docker = append(docker, e)
-		}
-	}
-
-	docker = append(docker, "-v")
-	docker = append(docker, ssh)
-	docker = append(docker, "-v")
-	docker = append(docker, data)
-
-	image, f := os.LookupEnv("USER_ANSIBLE_IMAGE")
-	if !f {
-		image = fmt.Sprintf("dcjulian29/ansible:%s", imageVersion)
-	}
-
-	docker = append(docker, image)
-	docker = append(docker, binary)
-	docker = append(docker, args...)
-
-	cmd := exec.Command("docker", docker...)
-	cmd.Stderr = os.Stderr
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-
-	if err := cmd.Run(); err != nil {
-		fmt.Printf("\033[1;31m%s\033[0m\n", err)
+	if _, err := docker.Run(opts); err != nil {
+		fmt.Println(textformat.Fatal(err.Error()))
 		os.Exit(1)
 	}
-
-	os.Exit(0)
 }
 
-// stdinIsTerminal reports whether standard input is attached to a terminal.
-//
-// Checking os.ModeCharDevice is not sufficient: the null device is also a
-// character device, so redirecting from /dev/null (or NUL on Windows) would
-// otherwise be mistaken for a terminal.
-func stdinIsTerminal() bool {
-	return term.IsTerminal(int(os.Stdin.Fd()))
+// environmentVariables collects the host environment variables the container
+// needs, keeping the prefixes the image expects.
+func environmentVariables() map[string]string {
+	env := docker.EnvironmentVariablesWithPrefix("ANSIBLE")
+
+	for key, value := range docker.EnvironmentVariablesWithPrefix("K8S") {
+		env[key] = value
+	}
+
+	return env
+}
+
+// imageReference returns the image and tag to run, honoring the
+// USER_ANSIBLE_IMAGE override which may or may not carry its own tag.
+func imageReference() (string, string) {
+	image, found := os.LookupEnv("USER_ANSIBLE_IMAGE")
+	if !found {
+		return "dcjulian29/ansible", imageVersion
+	}
+
+	// A colon only introduces the tag when it comes after the last path
+	// separator; before it, the colon belongs to a registry port such as
+	// "registry:5000/image".
+	if i := strings.LastIndex(image, ":"); i > strings.LastIndex(image, "/") {
+		return image[:i], image[i+1:]
+	}
+
+	return image, imageVersion
+}
+
+// sshKeyDirectory returns the host directory holding the SSH keys to mount.
+func sshKeyDirectory() string {
+	keys, found := os.LookupEnv("USER_ANSIBLE_KEYS")
+	if found {
+		return keys
+	}
+
+	home, _ := os.UserHomeDir()
+
+	return fmt.Sprintf("%s/.ssh", home)
+}
+
+func unixPath(path string) string {
+	return strings.ReplaceAll(path, "\\", "/")
 }

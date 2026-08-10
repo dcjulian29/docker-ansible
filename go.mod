@@ -2,6 +2,4 @@ module github.com/dcjulian29/docker-ansible
 
 go 1.26.5
 
-require golang.org/x/term v0.45.0
-
-require golang.org/x/sys v0.47.0 // indirect
+require github.com/dcjulian29/go-toolbox v0.33.0
