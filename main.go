@@ -21,6 +21,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"golang.org/x/term"
 )
 
 var imageVersion string
@@ -50,7 +52,14 @@ func main() {
 	docker := []string{
 		"run",
 		"--rm",
-		"-it",
+		"-i",
+	}
+
+	// Docker refuses to start when -t is requested but stdin is not a terminal,
+	// so only allocate one when the host actually has a terminal attached. This
+	// keeps the same binary usable from a shell, a pipe, and CI.
+	if stdinIsTerminal() {
+		docker = append(docker, "-t")
 	}
 
 	for _, e := range os.Environ() {
@@ -90,4 +99,13 @@ func main() {
 	}
 
 	os.Exit(0)
+}
+
+// stdinIsTerminal reports whether standard input is attached to a terminal.
+//
+// Checking os.ModeCharDevice is not sufficient: the null device is also a
+// character device, so redirecting from /dev/null (or NUL on Windows) would
+// otherwise be mistaken for a terminal.
+func stdinIsTerminal() bool {
+	return term.IsTerminal(int(os.Stdin.Fd()))
 }
