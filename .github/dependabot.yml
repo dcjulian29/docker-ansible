@@ -16,3 +16,9 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    # ansible-core 2.21 does not start on Python 3.15 (it patches the removed
+    # dataclasses._is_type). Remove this once an ansible-core release supports
+    # 3.15, then let Dependabot propose the bump.
+    ignore:
+      - dependency-name: "python"
+        versions: [">= 3.15"]
