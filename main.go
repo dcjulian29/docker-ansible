@@ -59,6 +59,15 @@ func main() {
 		},
 	}
 
+	// Molecule scenarios can drive Docker themselves so molecule alone gets the
+	// Docker socket. Not every tool: the socket is root-equivalent on the Docker
+	// host. Docker Desktop presents it as root:root 0660 while the image runs as
+	// uid 1000, so the container user also needs the root group to open it.
+	if name == "molecule" {
+		opts.Volumes = append(opts.Volumes, "/var/run/docker.sock:/var/run/docker.sock")
+		opts.Groups = []string{"0"}
+	}
+
 	if _, err := docker.Run(opts); err != nil {
 		fmt.Println(textformat.Fatal(err.Error()))
 		os.Exit(1)
