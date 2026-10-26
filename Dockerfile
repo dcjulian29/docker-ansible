@@ -1,7 +1,7 @@
 # Held at Python 3.14: ansible-core 2.21 patches dataclasses._is_type at
 # startup, and Python 3.15 removed it, so every Ansible tool fails on 3.15.
 # Dependabot ignores 3.15 until an ansible-core release supports it.
-FROM python:3.14.8-slim-bookworm
+FROM python:3.14.9-slim-bookworm
 
 LABEL org.opencontainers.image.source="https://github.com/dcjulian29/docker-ansible"
 LABEL org.opencontainers.image.description="A Docker Container and execution tool for Ansible"
